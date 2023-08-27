@@ -1,10 +1,12 @@
 import openai
+from src.config import settings  # Assurez-vous que le chemin d'importation est correct
 from src.utils import helpers  # Assurez-vous que le chemin d'importation est correct
 
 class ChatModel:
-    def __init__(self, api_key, model="text-davinci-002"):
-        self.api_key = api_key
-        self.model = model
+    def __init__(self):
+        if settings.OPENAI_API_TOKEN is None:
+            raise Exception("Veuillez configurer le token de l'API OpenAI.")
+        self.api_key = settings.OPENAI_API_TOKEN
         openai.api_key = self.api_key
 
     def get_response(self, prompt):
@@ -15,7 +17,7 @@ class ChatModel:
         helpers.log_message(f"Envoi de la requête à l'API OpenAI avec le prompt : {prompt}")
 
         response = openai.Completion.create(
-            engine=self.model,
+            engine="text-davinci-002",
             prompt=prompt,
             max_tokens=50  # Vous pouvez ajuster ce nombre selon vos besoins
         )
@@ -24,9 +26,3 @@ class ChatModel:
         helpers.log_message(f"Réponse reçue de l'API OpenAI : {response.choices[0].text.strip()}")
 
         return response.choices[0].text.strip()
-
-# Exemple d'utilisation
-if __name__ == "__main__":
-    api_key = "votre_clé_API_OpenAI"
-    chat_model = ChatModel(api_key)
-    print(chat_model.get_response("Bonjour, comment vas-tu ?"))
