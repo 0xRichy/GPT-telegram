@@ -5,7 +5,10 @@ from src.utils import helpers  # Assurez-vous que le chemin d'importation est co
 
 class TelegramAPI:
     def __init__(self):
-        # Enregistrement du message d'initialisation dans la console
+        self.token = settings.TELEGRAM_API_TOKEN
+        self.chat_id = settings.TELEGRAM_CHAT_ID
+        self.updater = Updater(token=self.token, use_context=True)
+        self.dispatcher = self.updater.dispatcher
         helpers.log_message("Initialisation de l'API Telegram...")
 
         self.token = settings.TELEGRAM_API_TOKEN
