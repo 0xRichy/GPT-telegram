@@ -1,12 +1,14 @@
 from telegram import Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from src.config import settings  # Assurez-vous que le chemin d'importation est correct
+from src.database.telegram import telegram_commands  # Assurez-vous que le chemin d'importation est correct
 
 class TelegramAPI:
     def __init__(self):
         self.token = settings.TELEGRAM_API_TOKEN
         self.updater = Updater(token=self.token, use_context=True)
         self.dispatcher = self.updater.dispatcher
+        telegram_commands.register_commands(self.dispatcher)  # Enregistrement des commandes
 
     def add_command_handler(self, command, callback):
         self.dispatcher.add_handler(CommandHandler(command, callback))
