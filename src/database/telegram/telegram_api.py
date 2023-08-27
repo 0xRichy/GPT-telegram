@@ -1,14 +1,16 @@
 from telegram import Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from src.config import settings  # Assurez-vous que le chemin d'importation est correct
-from src.database.telegram import telegram_commands  # Assurez-vous que le chemin d'importation est correct
+from src.utils import helpers  # Assurez-vous que le chemin d'importation est correct
 
 class TelegramAPI:
     def __init__(self):
+        # Enregistrement du message d'initialisation dans la console
+        helpers.log_message("Initialisation de l'API Telegram...")
+
         self.token = settings.TELEGRAM_API_TOKEN
         self.updater = Updater(token=self.token, use_context=True)
         self.dispatcher = self.updater.dispatcher
-        telegram_commands.register_commands(self.dispatcher)  # Enregistrement des commandes
 
     def add_command_handler(self, command, callback):
         self.dispatcher.add_handler(CommandHandler(command, callback))
@@ -17,8 +19,14 @@ class TelegramAPI:
         self.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, callback))
 
     def start_bot(self):
+        # Enregistrement du message de démarrage dans la console
+        helpers.log_message("Démarrage du bot Telegram...")
+        
         self.updater.start_polling()
         self.updater.idle()
+
+        # Enregistrement du message de fin dans la console
+        helpers.log_message("Bot Telegram arrêté.")
 
     def send_message(self, chat_id, text):
         bot = Bot(token=self.token)
